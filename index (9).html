@@ -1,0 +1,894 @@
+<!-- UNITE Reunion v6 -->
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>UNITE Reunion 🇺🇸</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:wght@700;900&display=swap');
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#EDE8DF;font-family:'Noto Sans TC',sans-serif;color:#1a1a1a;margin:0}
+.app{max-width:480px;margin:0 auto;min-height:100vh;background:#fff;box-shadow:0 0 60px rgba(0,0,0,.12);position:relative;padding-bottom:80px;overflow-x:hidden}
+
+/* HERO */
+.hero{position:relative;height:260px;overflow:hidden;border-radius:0 0 36px 36px;box-shadow:0 8px 30px rgba(0,0,0,.18)}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(160deg,#0d1f4a 0%,#C0392B 55%,#e8a020 100%)}
+.hero-stars{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.14) 1px,transparent 1px),radial-gradient(circle,rgba(255,255,255,.06) 1px,transparent 1px);background-size:36px 36px,18px 18px}
+.hero-stripe{position:absolute;top:0;left:0;right:0;height:6px;background:repeating-linear-gradient(90deg,#C0392B 0,#C0392B 33.33%,#fff 33.33%,#fff 66.66%,#1B3A6B 66.66%,#1B3A6B 100%)}
+.hero-c1{position:absolute;width:180px;height:180px;border-radius:50%;border:1.5px solid rgba(255,255,255,.1);top:-40px;right:-40px}
+.hero-c2{position:absolute;width:120px;height:120px;border-radius:50%;border:1.5px solid rgba(255,255,255,.08);bottom:-20px;left:-20px}
+.hero-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:55px}
+.hero-eyebrow{font-family:monospace;font-size:.6rem;letter-spacing:.3em;color:rgba(255,255,255,.6);text-transform:uppercase;margin-bottom:.6rem}
+.hero-title{font-family:'Playfair Display',serif;font-size:3.2rem;font-weight:900;line-height:.88;text-align:center;text-shadow:0 2px 20px rgba(0,0,0,.4);color:#fff}
+.hero-title span{color:#F0B429;display:block}
+.hero-sub{margin-top:.6rem;font-size:.7rem;color:rgba(255,255,255,.6)}
+.hero-tabs{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:20}
+.htab{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;border:none;cursor:pointer;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.htab.on{background:#1B3A6B;color:#fff;box-shadow:0 6px 18px rgba(27,58,107,.5);transform:scale(1.1)}
+.htab:not(.on){background:rgba(255,255,255,.9);color:#555}
+
+/* MARQUEE */
+.ann-bar{background:#1B3A6B;padding:8px 0;overflow:hidden;white-space:nowrap}
+.ann-inner{display:inline-flex;animation:marquee 25s linear infinite}
+.ann-item{display:inline-flex;align-items:center;gap:6px;margin-right:60px;font-size:.82rem;color:#fff;white-space:nowrap}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* CARDS */
+.card{background:#fff;border-radius:20px;padding:1.2rem;box-shadow:0 4px 20px rgba(0,0,0,.07);margin-bottom:1rem;border:1.5px solid rgba(0,0,0,.04)}
+.card-title{font-weight:900;font-size:1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem}
+.fade-in{animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.dot{width:5px;height:5px;border-radius:50%;background:#F0B429;display:inline-block;animation:blink 1s ease infinite}
+.dot:nth-child(2){animation-delay:.15s}.dot:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
+.scrollbar-hide::-webkit-scrollbar{display:none}
+.scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none}
+
+/* DAY TABS */
+.day-row{display:flex;overflow-x:auto;gap:8px;padding:10px 16px;background:#fff;border-bottom:1px solid #f0f0f0;position:sticky;top:0;z-index:10}
+.day-row::-webkit-scrollbar{display:none}
+.dtab{flex-shrink:0;width:52px;height:60px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;border:2px solid #eee;background:#fafafa;color:#aaa}
+.dtab.on{background:#1B3A6B;border-color:#1B3A6B;color:#fff;box-shadow:0 4px 12px rgba(27,58,107,.3);transform:scale(1.05)}
+
+/* SUBTABS (info) */
+.subtab-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.stab{padding:8px 16px;border-radius:20px;font-size:.82rem;font-weight:700;border:2px solid #e5e7eb;background:#fff;color:#666;cursor:pointer;transition:all .15s;font-family:inherit}
+.stab.on{background:#1B3A6B;border-color:#1B3A6B;color:#fff}
+
+/* WEATHER */
+.wx-strip{margin:12px 16px;background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border:1px solid #BFDBFE;border-radius:16px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+
+/* TIMELINE */
+.tl-wrap{padding:12px 16px}
+.tl-item{display:flex;gap:10px;margin-bottom:12px;position:relative}
+.tl-item:not(:last-child)::before{content:'';position:absolute;left:17px;top:42px;width:2px;height:calc(100% - 32px);background:#f0f0f0}
+.tl-left{display:flex;flex-direction:column;align-items:center;min-width:36px;flex-shrink:0}
+.tl-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.82rem;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.tl-time{font-size:.65rem;font-weight:700;color:#888;text-align:center;margin-top:3px;white-space:nowrap}
+.tl-card{flex:1;background:#fff;border-radius:16px;padding:10px 12px;border:1.5px solid #f0f0f0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.tl-name{font-weight:700;font-size:.88rem;color:#1a1a1a;line-height:1.3;margin-bottom:4px}
+.tl-img{width:100%;max-height:110px;object-fit:cover;border-radius:10px;margin-top:8px;display:block}
+.tl-btn{font-size:.68rem;padding:4px 10px;border-radius:20px;display:inline-flex;align-items:center;gap:4px;text-decoration:none;transition:all .15s;margin-top:6px;margin-right:4px;border:none;cursor:pointer;font-family:inherit}
+
+/* POPUP */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:flex;align-items:flex-end;justify-content:center}
+.popup{background:#fff;border-radius:24px 24px 0 0;padding:20px;max-height:80vh;overflow-y:auto;width:100%;max-width:480px}
+.popup-handle{width:40px;height:4px;background:#e0e0e0;border-radius:2px;margin:0 auto 14px}
+
+/* CHECKLIST */
+.cl-item{display:flex;align-items:center;gap:10px;padding:8px 8px;border-radius:12px;cursor:pointer;transition:background .15s;min-height:40px}
+.cl-item:hover{background:#f9f9f9}
+.cl-check{width:22px;height:22px;border-radius:50%;border:2px solid #ddd;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.cl-check.done{background:#22c55e;border-color:#22c55e}
+
+/* DICE */
+.dice-face{width:72px;height:72px;border-radius:16px;background:#fff;border:3px solid #1B3A6B;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.1);transition:transform .1s;position:relative}
+.dice-face:hover{transform:scale(1.08)}
+.dice-dots{display:grid;width:52px;height:52px;padding:6px;gap:3px}
+.dice-dot{width:10px;height:10px;border-radius:50%;background:#1B3A6B}
+@keyframes dieRoll{0%{transform:rotate(0)scale(1)}25%{transform:rotate(90deg)scale(.85)}50%{transform:rotate(180deg)scale(1.1)}75%{transform:rotate(270deg)scale(.9)}100%{transform:rotate(360deg)scale(1)}}
+.rolling{animation:dieRoll .4s ease}
+
+/* SCORE */
+.sc-card{background:#f8f8f8;border-radius:16px;padding:12px;text-align:center;border:1.5px solid #eee}
+.sc-val{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;color:#1B3A6B;line-height:1;margin:8px 0}
+.sc-btn{width:34px;height:34px;border-radius:50%;border:none;font-size:1rem;font-weight:900;cursor:pointer;transition:transform .1s;font-family:inherit}
+.sc-btn:hover{transform:scale(1.15)}
+
+/* SOS */
+.sos-item{background:#FFF5F5;border:1.5px solid #FECACA;border-left:4px solid #C0392B;border-radius:14px;padding:12px 14px;margin-bottom:8px}
+
+/* FLEET */
+.fleet-card{background:#f9fafb;border-radius:16px;padding:14px;margin-bottom:10px;border:1.5px solid #e5e7eb}
+
+/* EXPENSES */
+.exp-banner{border-radius:20px;padding:18px 20px;background:linear-gradient(135deg,#1B3A6B,#C0392B);color:#fff;margin-bottom:12px;position:relative;overflow:hidden}
+</style>
+</head>
+<body>
+<div id="app" class="app">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-stars"></div>
+  <div class="hero-stripe"></div>
+  <div class="hero-c1"></div>
+  <div class="hero-c2"></div>
+  <div class="hero-text">
+    <div class="hero-eyebrow">UNITE · 第三屆 · 美西之旅</div>
+    <div class="hero-title">UNITE<span>Reunion</span></div>
+    <div class="hero-sub">LA · Vegas · Grand Canyon · 9/18–9/27</div>
+  </div>
+  <div class="hero-tabs">
+    <button @click="tab='it'" :class="{on:tab==='it'}" class="htab" title="行程"><i class="fa-solid fa-map-location-dot"></i></button>
+    <button @click="tab='info'" :class="{on:tab==='info'}" class="htab" title="資訊"><i class="fa-solid fa-circle-info"></i></button>
+    <button @click="tab='exp'" :class="{on:tab==='exp'}" class="htab" title="花費"><i class="fa-solid fa-coins"></i></button>
+    <button @click="tab='game'" :class="{on:tab==='game'}" class="htab" title="Gaming"><i class="fa-solid fa-gamepad"></i></button>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="ann-bar" v-if="anns.length">
+  <div class="ann-inner">
+    <span v-for="a in anns" :key="a.t" class="ann-item"><span>{{a.e}}</span><strong>{{a.t}}</strong><span style="opacity:.65">{{a.b}}</span><span style="margin-left:24px;opacity:.35">✦</span></span>
+    <span v-for="a in anns" :key="'r'+a.t" class="ann-item"><span>{{a.e}}</span><strong>{{a.t}}</strong><span style="opacity:.65">{{a.b}}</span><span style="margin-left:24px;opacity:.35">✦</span></span>
+  </div>
+</div>
+
+<!-- ═══ ITINERARY ═══ -->
+<div v-if="tab==='it'" class="fade-in">
+  <div class="day-row">
+    <div v-for="(d,i) in dayList" :key="i" @click="selDay=i" class="dtab" :class="{on:selDay===i}">
+      <span style="font-weight:900;font-size:.76rem">D{{d}}</span>
+      <span style="font-size:.62rem;opacity:.8">9/{{17+Number(d)}}</span>
+    </div>
+    <div v-if="loadIt" style="display:flex;align-items:center;gap:4px;padding:0 8px;color:#ccc"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+  </div>
+
+  <div class="wx-strip" v-if="wxNow||rate">
+    <div style="display:flex;align-items:center;gap:10px;color:#1B3A6B">
+      <span style="font-size:2rem">{{wIcon(wxNow&&wxNow.weathercode)}}</span>
+      <div>
+        <div style="font-size:1.4rem;font-weight:900;line-height:1">{{wxNow?Math.round(wxNow.temperature_2m)+'°C':'--'}}</div>
+        <div style="font-size:.62rem;color:#64748b;margin-top:2px">{{curCityName}}</div>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:1.2rem;font-weight:900;color:#1B3A6B">NT${{rate.toFixed(1)}}</div>
+      <div style="font-size:.62rem;color:#64748b;margin-top:2px">1 USD 匯率</div>
+    </div>
+  </div>
+
+  <div class="tl-wrap">
+    <div v-if="!loadIt && curItems.length===0" style="text-align:center;padding:40px 0;color:#ccc">
+      <i class="fa-solid fa-map" style="font-size:2.5rem;display:block;margin-bottom:8px"></i>本日尚無行程
+    </div>
+    <div v-for="(item,idx) in curItems" :key="idx" class="tl-item">
+      <div class="tl-left">
+        <div class="tl-icon" :style="{background:cColor(item.category)}">
+          <i :class="cIcon(item.category)"></i>
+        </div>
+        <div class="tl-time">{{item._time}}</div>
+      </div>
+      <div class="tl-card">
+        <div class="tl-name">{{item._name}}</div>
+        <div v-if="item._note" style="font-size:.75rem;color:#888;line-height:1.5;margin:3px 0 4px">{{item._note}}</div>
+        <img v-if="item._img" :src="item._img" class="tl-img" @error="hideImg($event)" loading="lazy">
+        <div>
+          <a v-if="item._map" :href="item._map" target="_blank" class="tl-btn" style="background:#EFF6FF;color:#2563EB">
+            <i class="fa-solid fa-location-dot"></i> 地圖
+          </a>
+          <button v-if="item._intro && item._intro.length>1" @click="curPopup=item" class="tl-btn" style="background:#F0FDF4;color:#16a34a">
+            <i class="fa-solid fa-circle-info"></i> 導覽介紹
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ INFO ═══ -->
+<div v-if="tab==='info'" class="fade-in" style="padding:14px">
+  <div class="subtab-row">
+    <button @click="sub='cl'" class="stab" :class="{on:sub==='cl'}">🧳 行前準備</button>
+    <button @click="sub='cars'" class="stab" :class="{on:sub==='cars'}">🚗 分車</button>
+    <button @click="sub='rooms'" class="stab" :class="{on:sub==='rooms'}">🏨 分房</button>
+    <button @click="sub='fleet'" class="stab" :class="{on:sub==='fleet'}">📍 車隊</button>
+    <button @click="sub='sos'" class="stab" :class="{on:sub==='sos'}">🆘 緊急</button>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div v-if="sub==='cl'" class="card">
+    <div class="card-title"><i class="fa-solid fa-suitcase" style="color:#1B3A6B"></i> 行前準備</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+      <button v-for="c in clCats" :key="c" @click="clCat=c" class="stab" :class="{on:clCat===c}" style="padding:5px 12px;font-size:.72rem">
+        {{c==='all'?'全部':c}}
+      </button>
+    </div>
+    <div v-if="loadCl" style="display:flex;gap:4px;color:#ccc;font-size:.8rem;padding:8px 0"><span class="dot"></span><span class="dot"></span><span class="dot"></span> 載入中</div>
+    <div v-if="!loadCl&&clShow.length===0" style="color:#f59e0b;font-size:.78rem;padding:8px 12px;background:#fffbeb;border-radius:8px">
+      ⚠ 無法讀取，偵測到欄位：{{clDebugCols}}
+    </div>
+    <div v-for="item in clShow" :key="item._key" class="cl-item" @click="toggleCl(item._key)">
+      <div class="cl-check" :class="{done:ckd.has(item._key)}">
+        <i v-if="ckd.has(item._key)" class="fa-solid fa-check" style="color:#fff;font-size:.65rem"></i>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.87rem;font-weight:500" :style="ckd.has(item._key)?'text-decoration:line-through;color:#aaa':''">{{item._item}}</div>
+        <div v-if="item._note" style="font-size:.7rem;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{item._note}}</div>
+      </div>
+      <span v-if="item._req" style="font-size:.6rem;background:#FEF2F2;color:#ef4444;padding:2px 8px;border-radius:20px;flex-shrink:0">必帶</span>
+    </div>
+  </div>
+
+  <!-- CARS -->
+  <div v-if="sub==='cars'" class="card">
+    <div class="card-title"><i class="fa-solid fa-car" style="color:#C0392B"></i> 分車表</div>
+    <div v-if="loadCars" style="display:flex;gap:4px;color:#ccc;font-size:.8rem"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+    <div v-if="!loadCars&&cars.length===0" style="color:#f59e0b;font-size:.78rem;padding:8px 12px;background:#fffbeb;border-radius:8px">⚠ 無法讀取分車，偵測到欄位：{{carsDebugCols}}</div>
+    <div v-for="(car,ci) in cars" :key="ci" style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <div style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.72rem;font-weight:900;box-shadow:0 2px 6px rgba(0,0,0,.15);flex-shrink:0"
+          :style="{background:['#1B3A6B','#C0392B','#16a34a','#ea580c'][ci%4]}">
+          {{car._num}}
+        </div>
+        <span style="font-weight:700;font-size:.9rem">{{car._name}}</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;padding-left:42px">
+        <span v-for="p in car._pax" :key="p" style="font-size:.75rem;background:#f3f4f6;color:#555;padding:3px 10px;border-radius:20px">{{p}}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROOMS -->
+  <div v-if="sub==='rooms'" class="card">
+    <div class="card-title"><i class="fa-solid fa-bed" style="color:#7c3aed"></i> 分房表</div>
+    <div v-if="loadRooms" style="display:flex;gap:4px;color:#ccc;font-size:.8rem"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+    <div v-for="r in rooms" :key="r._key" style="padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid #f0f0f0">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+        <div>
+          <div style="font-size:.68rem;color:#ea580c;font-weight:700">{{r._period}}</div>
+          <div style="font-weight:700;font-size:.9rem">{{r._hotel}}</div>
+          <div style="font-size:.75rem;color:#888">{{r._room}}</div>
+        </div>
+        <div style="text-align:right;font-size:.7rem;color:#aaa;flex-shrink:0;margin-left:8px">
+          <div>✅ {{r._in}}</div>
+          <div>🚪 {{r._out}}</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px">
+        <span v-for="m in r._members" :key="m" style="font-size:.72rem;background:#FFF7ED;color:#ea580c;padding:2px 8px;border-radius:20px">{{m}}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLEET - 一鍵定位 + 地圖顯示 -->
+  <div v-if="sub==='fleet'" class="card">
+    <div class="card-title"><i class="fa-solid fa-location-arrow" style="color:#16a34a"></i> Fleet Tracker</div>
+
+    <!-- 說明步驟 -->
+    <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:.78rem;color:#166534;line-height:1.7">
+      <strong>司機操作步驟：</strong><br>
+      ① 點「一鍵分享位置」開啟 Google Maps<br>
+      ② 右上角頭像 → 位置分享 → 選「直到你關閉」<br>
+      ③ 複製連結 → 貼到 Sheet 的 Fleet Tracker tab<br>
+      ④ 其他人刷新網頁即可看到地圖 📍
+    </div>
+
+    <!-- 有分車資料 -->
+    <div v-if="cars.length>0">
+      <div v-for="(car,ci) in cars" :key="ci" class="fleet-card" style="margin-bottom:12px">
+        <!-- 車頭資訊 + 按鈕 -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.72rem;font-weight:900;flex-shrink:0"
+            :style="{background:['#1B3A6B','#C0392B','#16a34a','#ea580c'][ci%4]}">
+            {{ci+1}}
+          </div>
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:.9rem">{{car._name}}</div>
+            <div style="font-size:.7rem;color:#aaa">{{car._pax.slice(0,4).join('、')}}{{car._pax.length>4?'...':''}}</div>
+          </div>
+          <a href="https://maps.google.com/?action=share" target="_blank"
+            style="background:#16a34a;color:#fff;font-size:.72rem;padding:7px 12px;border-radius:20px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;flex-shrink:0;white-space:nowrap">
+            <i class="fa-solid fa-location-crosshairs"></i> 一鍵分享位置
+          </a>
+        </div>
+        <!-- 地圖嵌入（如果 Sheet 有填連結） -->
+        <div v-if="fleetMap(ci)" style="border-radius:12px;overflow:hidden;height:150px;border:1px solid #e5e7eb">
+          <iframe :src="fleetMap(ci)" style="width:100%;height:100%;border:0" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div v-else style="background:#f9fafb;border-radius:12px;height:60px;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#bbb;border:1.5px dashed #e5e7eb">
+          📍 司機分享連結後自動顯示地圖
+        </div>
+      </div>
+    </div>
+
+    <!-- 無分車資料時的 fallback -->
+    <div v-else>
+      <div v-for="n in [1,2,3,4]" :key="n" class="fleet-card" style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.82rem;font-weight:900;flex-shrink:0"
+            :style="{background:['#1B3A6B','#C0392B','#16a34a','#ea580c'][(n-1)%4]}">
+            {{n}}
+          </div>
+          <div style="flex:1;font-weight:700">車{{n}}</div>
+          <a href="https://maps.google.com/?action=share" target="_blank"
+            style="background:#16a34a;color:#fff;font-size:.72rem;padding:7px 12px;border-radius:20px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;flex-shrink:0">
+            <i class="fa-solid fa-location-crosshairs"></i> 一鍵分享位置
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOS -->
+  <div v-if="sub==='sos'" class="card" style="background:#FFF5F5;border-color:#FECACA">
+    <div class="card-title" style="color:#dc2626"><i class="fa-solid fa-kit-medical"></i> 🆘 緊急資訊</div>
+    <div v-for="s in sos" :key="s._key" class="sos-item">
+      <div style="font-size:.62rem;color:#ef4444;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">{{s._cat}}</div>
+      <div style="font-weight:700;font-size:.88rem">{{s._label}}</div>
+      <a :href="'tel:'+s._contact.replace(/\s/g,'')" style="font-weight:900;font-size:1.1rem;color:#1B3A6B;text-decoration:none;display:block;line-height:1.3">{{s._contact}}</a>
+      <div v-if="s._note" style="font-size:.7rem;color:#888;margin-top:2px">{{s._note}}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EXPENSES ═══ -->
+<div v-if="tab==='exp'" class="fade-in" style="padding:14px">
+  <div class="exp-banner">
+    <div style="position:absolute;right:-20px;top:-20px;width:100px;height:100px;background:rgba(255,255,255,.07);border-radius:50%"></div>
+    <div style="position:relative;z-index:1">
+      <div style="font-size:.7rem;color:rgba(255,255,255,.6);margin-bottom:4px">目前共同花費</div>
+      <div style="font-size:2.8rem;font-weight:900;line-height:1">${{totUSD.toFixed(0)}}</div>
+      <div style="font-size:.8rem;color:rgba(255,255,255,.6);margin-top:4px">≈ NT${{Math.round(totUSD*rate).toLocaleString()}}</div>
+      <div style="display:flex;gap:18px;margin-top:10px;font-size:.72rem">
+        <div><div style="color:rgba(255,255,255,.5)">每人平均</div><div style="font-weight:700">${{(totUSD/19).toFixed(1)}}</div></div>
+        <div><div style="color:rgba(255,255,255,.5)">筆數</div><div style="font-weight:700">{{exps.length}}</div></div>
+        <div><div style="color:rgba(255,255,255,.5)">USD匯率</div><div style="font-weight:700">{{rate.toFixed(2)}}</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="fa-solid fa-receipt" style="color:#ccc"></i> 支出紀錄</div>
+    <div v-if="loadExp" style="display:flex;gap:4px;color:#ccc;font-size:.8rem;justify-content:center;padding:8px 0"><span class="dot"></span><span class="dot"></span><span class="dot"></span> 載入中</div>
+    <div v-if="!loadExp&&exps.length===0" style="color:#aaa;text-align:center;padding:16px;font-size:.82rem">尚無花費記錄</div>
+    <div v-for="(e,i) in exps" :key="i" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f5f5f5">
+      <div style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;font-size:.9rem" :class="eBg(e._cat)">
+        <i :class="eFa(e._cat)"></i>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.86rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{e._desc}}</div>
+        <div style="font-size:.68rem;color:#aaa">{{e._date}} · {{e._payer}} · <span :style="e._pay==='刷卡'?'color:#3b82f6':'color:#16a34a'">{{e._pay}}</span></div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-weight:900;font-size:.88rem">${{e._usd.toFixed(0)}}</div>
+        <div style="font-size:.66rem;color:#aaa">NT${{Math.round(e._usd*rate).toLocaleString()}}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ GAMING ═══ -->
+<div v-if="tab==='game'" class="fade-in" style="padding:14px">
+  <div class="subtab-row">
+    <button v-for="g in games" :key="g.k" @click="gTab=g.k" class="stab" :class="{on:gTab===g.k}">{{g.l}}</button>
+  </div>
+
+  <!-- LOTTERY -->
+  <div v-if="gTab==='lot'" class="card">
+    <div class="card-title">🎰 抽籤</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <input v-model="lIn" @keydown.enter="lAdd" placeholder="輸入名字..."
+        style="flex:1;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;padding:8px 12px;font-size:.88rem;outline:none;font-family:inherit">
+      <button @click="lAdd" style="background:#1B3A6B;color:#fff;border:none;border-radius:12px;padding:8px 14px;font-weight:700;font-size:.82rem;cursor:pointer;font-family:inherit">新增</button>
+      <button @click="lAll" style="background:#f3f4f6;color:#555;border:none;border-radius:12px;padding:8px 10px;font-weight:700;font-size:.82rem;cursor:pointer;font-family:inherit">全員</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;min-height:24px">
+      <span v-for="(p,i) in lPool" :key="i" @click="lDel(i)"
+        style="background:#f3f4f6;color:#555;padding:4px 12px;border-radius:20px;font-size:.82rem;cursor:pointer">{{p}} ✕</span>
+    </div>
+    <div style="text-align:center;padding:12px 0">
+      <div style="font-size:3rem;font-weight:900;min-height:3.8rem;display:flex;align-items:center;justify-content:center;transition:color .3s" :style="{color:lColor}">{{lRes}}</div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
+        <button @click="lDraw" style="background:#C0392B;color:#fff;border:none;padding:12px 28px;border-radius:16px;font-size:1.1rem;font-weight:900;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(192,57,43,.3)">🎰 抽！</button>
+        <button @click="lClear" style="background:#f3f4f6;color:#666;border:none;padding:12px 16px;border-radius:16px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:inherit">清空</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DICE - using SVG dots instead of emoji -->
+  <div v-if="gTab==='dice'" class="card">
+    <div class="card-title">🎲 骰子</div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:12px 0 16px">
+      <div v-for="(val,i) in dVals" :key="i" class="dice-face" :class="{rolling:dRoll[i]}" @click="rollOne(i)">
+        <svg width="52" height="52" viewBox="0 0 52 52">
+          <!-- 1 -->
+          <circle v-if="val===1" cx="26" cy="26" r="5" fill="#1B3A6B"/>
+          <!-- 2 -->
+          <circle v-if="val===2" cx="13" cy="13" r="5" fill="#1B3A6B"/>
+          <circle v-if="val===2" cx="39" cy="39" r="5" fill="#1B3A6B"/>
+          <!-- 3 -->
+          <circle v-if="val===3" cx="13" cy="13" r="5" fill="#1B3A6B"/>
+          <circle v-if="val===3" cx="26" cy="26" r="5" fill="#1B3A6B"/>
+          <circle v-if="val===3" cx="39" cy="39" r="5" fill="#1B3A6B"/>
+          <!-- 4 -->
+          <circle v-if="val===4" cx="13" cy="13" r="5" fill="#1B3A6B"/>
+          <circle v-if="val===4" cx="39" cy="13" r="5" fill="#1B3A6B"/>
+          <circle v-if="val===4" cx="13" cy="39" r="5" fill="#1B3A6B"/>
+          <circle v-if="val===4" cx="39" cy="39" r="5" fill="#1B3A6B"/>
+          <!-- 5 -->
+          <circle v-if="val===5" cx="13" cy="13" r="5" fill="#1B3A6B"/>
+          <circle v-if="val===5" cx="39" cy="13" r="5" fill="#1B3A6B"/>
+          <circle v-if="val===5" cx="26" cy="26" r="5" fill="#1B3A6B"/>
+          <circle v-if="val===5" cx="13" cy="39" r="5" fill="#1B3A6B"/>
+          <circle v-if="val===5" cx="39" cy="39" r="5" fill="#1B3A6B"/>
+          <!-- 6 -->
+          <circle v-if="val===6" cx="13" cy="10" r="5" fill="#1B3A6B"/>
+          <circle v-if="val===6" cx="39" cy="10" r="5" fill="#1B3A6B"/>
+          <circle v-if="val===6" cx="13" cy="26" r="5" fill="#1B3A6B"/>
+          <circle v-if="val===6" cx="39" cy="26" r="5" fill="#1B3A6B"/>
+          <circle v-if="val===6" cx="13" cy="42" r="5" fill="#1B3A6B"/>
+          <circle v-if="val===6" cx="39" cy="42" r="5" fill="#1B3A6B"/>
+          <!-- 0 = not rolled yet -->
+          <text v-if="val===0" x="26" y="31" text-anchor="middle" font-size="16" fill="#ccc" font-family="sans-serif">?</text>
+        </svg>
+      </div>
+    </div>
+    <div v-if="dTotal>0" style="text-align:center;font-size:1.4rem;font-weight:900;color:#1B3A6B;margin-bottom:12px">合計：{{dTotal}}</div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button @click="rollAll" style="background:#1B3A6B;color:#fff;border:none;padding:10px 18px;border-radius:12px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:inherit">🎲 全部擲！</button>
+      <button @click="dAdd" v-if="dVals.length<8" style="background:#f3f4f6;color:#555;border:none;padding:10px 14px;border-radius:12px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:inherit">＋ 加骰子</button>
+      <button @click="dDel" v-if="dVals.length>1" style="background:#f3f4f6;color:#555;border:none;padding:10px 14px;border-radius:12px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:inherit">－ 減骰子</button>
+    </div>
+  </div>
+
+  <!-- SCOREBOARD -->
+  <div v-if="gTab==='score'" class="card">
+    <div class="card-title">🏆 計分板</div>
+    <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
+      <input v-model="sIn" @keydown.enter="sAdd" placeholder="新增玩家..."
+        style="flex:1;min-width:120px;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;padding:8px 12px;font-size:.88rem;outline:none;font-family:inherit">
+      <button @click="sAdd" style="background:#1B3A6B;color:#fff;border:none;border-radius:12px;padding:8px 14px;font-weight:700;font-size:.82rem;cursor:pointer;font-family:inherit">加入</button>
+      <button @click="sAll" style="background:#f3f4f6;color:#555;border:none;border-radius:12px;padding:8px 10px;font-weight:700;font-size:.82rem;cursor:pointer;font-family:inherit">全員</button>
+      <button @click="sReset" style="background:#FEF2F2;color:#ef4444;border:none;border-radius:12px;padding:8px 10px;font-size:.82rem;cursor:pointer;font-family:inherit">重置</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div v-for="(p,i) in scList" :key="p.n" class="sc-card">
+        <div style="font-size:.68rem;color:#aaa">{{['🥇','🥈','🥉'][i]||'#'+(i+1)}}</div>
+        <div style="font-weight:700;font-size:.83rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{p.n}}</div>
+        <div class="sc-val">{{p.s}}</div>
+        <div style="display:flex;gap:6px;justify-content:center;margin-top:8px">
+          <button @click="sPlus(p.n)" class="sc-btn" style="background:#dcfce7;color:#16a34a">＋</button>
+          <button @click="sMinus(p.n)" class="sc-btn" style="background:#FEF2F2;color:#ef4444">－</button>
+          <button @click="sDel(p.n)" class="sc-btn" style="background:#f3f4f6;color:#aaa;font-size:.72rem">🗑</button>
+        </div>
+      </div>
+    </div>
+    <div v-if="scList.length===0" style="color:#aaa;font-size:.82rem;text-align:center;padding:16px">加入玩家後開始計分</div>
+  </div>
+</div>
+
+<!-- POPUP -->
+<div v-if="curPopup" class="overlay" @click.self="curPopup=null">
+  <div class="popup">
+    <div class="popup-handle"></div>
+    <div style="font-weight:900;font-size:1rem;margin-bottom:8px">{{curPopup._name}}</div>
+    <img v-if="curPopup._img" :src="curPopup._img" @error="hideImg($event)"
+      style="width:100%;height:160px;object-fit:cover;border-radius:14px;margin-bottom:12px;display:block">
+    <p style="font-size:.88rem;line-height:1.7;color:#444">{{curPopup._intro}}</p>
+    <div style="margin-top:14px;display:flex;gap:8px">
+      <a v-if="curPopup._map" :href="curPopup._map" target="_blank"
+        style="font-size:.78rem;background:#EFF6FF;color:#2563EB;padding:8px 14px;border-radius:20px;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
+        <i class="fa-solid fa-location-dot"></i> Google 地圖
+      </a>
+      <button @click="curPopup=null"
+        style="font-size:.78rem;background:#f3f4f6;color:#666;border:none;padding:8px 14px;border-radius:20px;cursor:pointer;font-family:inherit">關閉</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+const { createApp, ref, computed, reactive, onMounted } = Vue;
+
+const SHEET_ID = '1IDivf8Qa-0RZ48e9kL95M05pmDP7cuORkcfIvpxuxPI';
+const GIDS = {
+  it:'62470407', ann:'103928860', cl:'2066468640',
+  cars:'594483032', rooms:'1302066597', exp:'1805320525',
+  fleet:'638807346', sos:'1113369150'
+};
+const MBR = ['傅思瑋','曹芳蜜','林孟蓉','白坤耿','蕭子翔','鄭揚霖','謝協成','吳松霖','張書寧','盧振揚','林筠珊','蔡金童','陳語柔','楊怡玫','張彥傑','謝韻璇','聶誠漢','江承祐','薛安秀'];
+
+// City weather by day number
+const CITIES = {
+  LA: {lat:34.05,lon:-118.25,name:'洛杉磯'},
+  LV: {lat:36.17,lon:-115.14,name:'拉斯維加斯'},
+  GC: {lat:36.05,lon:-112.14,name:'大峽谷'},
+  PX: {lat:33.45,lon:-112.07,name:'鳳凰城'},
+};
+function dayCity(d){
+  const n=Number(d);
+  if(n<=4) return CITIES.LA;
+  if(n<=6) return CITIES.LV;
+  if(n<=7) return CITIES.GC;
+  return CITIES.PX;
+}
+
+// Parse gviz time: "Date(1899,11,30,H,M,0)" -> "HH:MM"
+// Also handle formatted string like "上午8:10"
+function parseTime(raw,fmt){
+  if(!raw&&!fmt) return '';
+  // Try formatted value first
+  if(fmt){
+    // fmt might be "上午8:10" or "8:10 AM" or "08:10"
+    const m24=fmt.match(/(\d{1,2}):(\d{2})/);
+    if(m24){
+      // Check for 下午/PM
+      const isPM = /下午|PM/i.test(fmt);
+      let h=parseInt(m24[1]);
+      const mn=m24[2];
+      if(isPM && h!==12) h+=12;
+      if(!isPM && h===12) h=0;
+      return String(h).padStart(2,'0')+':'+mn;
+    }
+  }
+  // Parse raw Date() string
+  const m=String(raw).match(/Date\(\d+,\d+,\d+,(\d+),(\d+)/);
+  if(m) return String(m[1]).padStart(2,'0')+':'+String(m[2]).padStart(2,'0');
+  return String(raw||'');
+}
+
+// Use published CSV - more reliable column names
+const PUB_KEY = '2PACX-1vQoNtMdPe8xy_JFrvdEkFqJAohgTPG0qPEkHtCGDSMOaIA8uEZa1T3YYqG8QGTdRut5O1DURThVkXB_';
+
+function parseCSV(text){
+  const lines=text.trim().split('\n');
+  if(!lines.length) return {cols:[],rows:[]};
+  const cols=splitCSVLine(lines[0]).map(h=>h.trim().replace(/^"|"$/g,''));
+  const rows=lines.slice(1).map(line=>{
+    const vals=splitCSVLine(line).map(v=>v.trim().replace(/^"|"$/g,''));
+    const o={_cols:cols};
+    cols.forEach((c,i)=>{
+      const v=vals[i]||'';
+      o[c]=v;
+      // also store lowercase no-space key
+      const k=c.toLowerCase().replace(/[\s\-_()/（）]/g,'');
+      if(k!==c) o[k]=v;
+      o['_v:'+c]=v; // for compatibility
+    });
+    return o;
+  }).filter(r=>cols.some(c=>r[c]&&r[c]!==''));
+  return {cols,rows};
+}
+
+function splitCSVLine(line){
+  const res=[]; let cur=''; let q=false;
+  for(let i=0;i<line.length;i++){
+    const c=line[i];
+    if(c==='"'&&line[i+1]==='"'){cur+='"';i++;}
+    else if(c==='"'){q=!q;}
+    else if(c===','&&!q){res.push(cur);cur='';}
+    else cur+=c;
+  }
+  res.push(cur);
+  return res;
+}
+
+async function gviz(gid){
+  // Try published CSV first (preserves column names correctly)
+  const url=`https://docs.google.com/spreadsheets/d/e/${PUB_KEY}/pub?gid=${gid}&single=true&output=csv`;
+  const r=await fetch(url);
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  const text=await r.text();
+  if(text.includes('<!DOCTYPE')||text.includes('<html')) throw new Error('Not CSV');
+  return parseCSV(text);
+}
+
+createApp({
+  setup(){
+    const tab=ref('it');
+    const sub=ref('cl');
+    const gTab=ref('lot');
+    const games=[{k:'lot',l:'🎰 抽籤'},{k:'dice',l:'🎲 骰子'},{k:'score',l:'🏆 計分板'}];
+
+    // data
+    const anns=ref([]);
+    const itRaw=ref([]); const loadIt=ref(true);
+    const clRaw=ref([]); const loadCl=ref(true); const clCat=ref('all');
+    const clDebugCols=ref('');
+    const cars=ref([]); const loadCars=ref(true);
+    const carsDebugCols=ref('');
+    const rooms=ref([]); const loadRooms=ref(true);
+    const exps=ref([]); const loadExp=ref(true);
+    const sos=ref([]);
+    const fleetData=ref([]);
+
+    // Get map URL for a car by index
+    function fleetMap(ci){
+      const f=fleetData.value[ci];
+      if(!f) return null;
+      const url=f['Maps_URL']||f['maps_url']||f['mapsurl']||f['Maps URL']||'';
+      return url.startsWith('http')?url:null;
+    }
+    const rate=ref(32.5);
+    const wxAll=ref({});
+    const selDay=ref(0);
+    const curPopup=ref(null);
+    // checklist checked set - use array for reactivity
+    const ckdArr=ref(JSON.parse(localStorage.getItem('ckd')||'[]'));
+    const ckd=computed(()=>new Set(ckdArr.value));
+
+    // score - use ref array for reactivity
+    const scArr=ref(JSON.parse(localStorage.getItem('scArr')||'[]')); // [{n,s}]
+    const saveSc=()=>localStorage.setItem('scArr',JSON.stringify(scArr.value));
+
+    // dice
+    const dVals=ref([0]);
+    const dRoll=ref([false]);
+    const dTotal=computed(()=>dVals.value.reduce((s,v)=>s+v,0));
+
+    // lottery
+    const lIn=ref(''); const lPool=ref([]); const lRes=ref('？'); const lColor=ref('#C0392B');
+
+    // score input
+    const sIn=ref('');
+    const scList=computed(()=>[...scArr.value].sort((a,b)=>b.s-a.s));
+
+    // itinerary
+    const dayList=computed(()=>[...new Set(itRaw.value.map(r=>r._day).filter(Boolean))].sort((a,b)=>Number(a)-Number(b)));
+    const curDayN=computed(()=>dayList.value[selDay.value]);
+    const curItems=computed(()=>itRaw.value.filter(r=>r._day===curDayN.value));
+    const curCityObj=computed(()=>dayCity(curDayN.value));
+    const curCityName=computed(()=>curCityObj.value.name);
+    const wxNow=computed(()=>wxAll.value[curCityObj.value.name]||null);
+
+    // checklist
+    const clCats=computed(()=>['all',...new Set(clRaw.value.map(r=>r._cat).filter(Boolean))]);
+    const clShow=computed(()=>{
+      const list=clCat.value==='all'?clRaw.value:clRaw.value.filter(r=>r._cat===clCat.value);
+      return list;
+    });
+
+    // expenses total
+    const totUSD=computed(()=>exps.value.reduce((s,e)=>s+e._usd,0));
+
+    // helpers
+    function wIcon(c){if(!c)return'🌤';if(c===0)return'☀️';if(c<=2)return'⛅';if(c<=3)return'☁️';if(c<=67)return'🌧️';return'⛈️';}
+    function hideImg(e){e.target.style.display='none';}
+    function cColor(cat){const m={'✈️':'#3b82f6','🍜':'#ef4444','🏪':'#6366f1','🏠':'#8b5cf6','🚗':'#f97316','📍':'#22c55e','🛍️':'#ec4899','🧑‍🍳':'#eab308','🌅':'#0891b2'};return m[cat]||'#94a3b8';}
+    function cIcon(cat){const m={'✈️':'fa-solid fa-plane','🍜':'fa-solid fa-utensils','🏪':'fa-solid fa-store','🏠':'fa-solid fa-house','🚗':'fa-solid fa-car','📍':'fa-solid fa-camera','🛍️':'fa-solid fa-bag-shopping','🧑‍🍳':'fa-solid fa-fire-burner','🌅':'fa-solid fa-sun'};return m[cat]||'fa-solid fa-circle-dot';}
+    function eBg(c){const m={'伙食':'bg-red-400','餐廳':'bg-red-400','油錢':'bg-green-500','停車':'bg-blue-500','景點':'bg-purple-500','超市':'bg-yellow-500','其他':'bg-gray-400'};return m[c]||'bg-gray-400';}
+    function eFa(c){const m={'伙食':'fa-solid fa-utensils','餐廳':'fa-solid fa-utensils','油錢':'fa-solid fa-gas-pump','停車':'fa-solid fa-square-parking','景點':'fa-solid fa-ticket','超市':'fa-solid fa-store','其他':'fa-solid fa-ellipsis'};return m[c]||'fa-solid fa-ellipsis';}
+
+    function toggleCl(k){
+      const arr=[...ckdArr.value];
+      const i=arr.indexOf(k);
+      if(i>=0) arr.splice(i,1); else arr.push(k);
+      ckdArr.value=arr;
+      localStorage.setItem('ckd',JSON.stringify(arr));
+    }
+
+    // lottery
+    function lAdd(){const v=lIn.value.trim();if(!v)return;lPool.value.push(v);lIn.value='';}
+    function lDel(i){lPool.value.splice(i,1);}
+    function lClear(){lPool.value=[];lRes.value='？';lColor.value='#C0392B';}
+    function lAll(){lPool.value=MBR.slice();}
+    function lDraw(){
+      if(!lPool.value.length){alert('請先加入成員！');return;}
+      const w=lPool.value[Math.floor(Math.random()*lPool.value.length)];
+      let n=0;
+      const iv=setInterval(()=>{
+        lRes.value=lPool.value[Math.floor(Math.random()*lPool.value.length)];
+        lColor.value='hsl('+Math.floor(Math.random()*360)+',70%,45%)';
+        if(++n>18){clearInterval(iv);lRes.value=w;lColor.value='#C0392B';}
+      },80);
+    }
+
+    // dice
+    function rollOne(i){
+      dRoll.value[i]=true;
+      let n=0;
+      const iv=setInterval(()=>{
+        dVals.value[i]=Math.floor(Math.random()*6)+1;
+        if(++n>10){clearInterval(iv);setTimeout(()=>{dRoll.value[i]=false;},100);}
+      },60);
+    }
+    function rollAll(){dVals.value.forEach((_,i)=>rollOne(i));}
+    function dAdd(){if(dVals.value.length<8){dVals.value.push(0);dRoll.value.push(false);}}
+    function dDel(){if(dVals.value.length>1){dVals.value.pop();dRoll.value.pop();}}
+
+    // score - fixed: use array ref
+    function sAdd(){
+      const n=sIn.value.trim();
+      if(!n)return;
+      if(!scArr.value.find(p=>p.n===n)){
+        scArr.value=[...scArr.value,{n,s:0}];
+        saveSc();
+      }
+      sIn.value='';
+    }
+    function sAll(){
+      MBR.forEach(m=>{if(!scArr.value.find(p=>p.n===m))scArr.value=[...scArr.value,{n:m,s:0}];});
+      saveSc();
+    }
+    function sPlus(n){
+      scArr.value=scArr.value.map(p=>p.n===n?{n:p.n,s:p.s+1}:p);
+      saveSc();
+    }
+    function sMinus(n){
+      scArr.value=scArr.value.map(p=>p.n===n?{n:p.n,s:p.s-1}:p);
+      saveSc();
+    }
+    function sDel(n){
+      scArr.value=scArr.value.filter(p=>p.n!==n);
+      saveSc();
+    }
+    function sReset(){
+      if(confirm('確定重置所有分數？')){scArr.value=[];saveSc();}
+    }
+
+    // fetch weather
+    async function fetchWx(){
+      for(const [,c] of Object.entries(CITIES)){
+        try{
+          const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude='+c.lat+'&longitude='+c.lon+'&current=temperature_2m,weathercode&timezone=America/Los_Angeles');
+          const d=await r.json();
+          wxAll.value={...wxAll.value,[c.name]:d.current||null};
+        }catch(e){}
+      }
+    }
+
+    // parse sheet rows into normalized objects
+    function g(r,names){for(const n of names){if(r[n]&&r[n]!=='null')return r[n];}return '';}
+
+    function parseIT(rows,cols){
+      return rows.map(r=>{
+        // CSV gives time as string like "20:05" or "上午8:05"
+        const timeStr=g(r,['Time','time']);
+        return {
+          ...r,
+          _day:String(parseInt(g(r,['Day','day']))||'').replace(/[^0-9]/g,'')||'',
+          _time:parseTime(null,timeStr),
+          _name:g(r,['Location Name','LocationName','locationname','location name','Activity','activity']),
+          _note:g(r,['Note','note','Notes','notes']),
+          _intro:g(r,['Intro','intro']),
+          _cat:g(r,['Category','category']),
+          _map:g(r,['GoogleMap Link','googlemaplink','GoogleMap_Link','googlemap link','GoogleMap Link']),
+          _img:g(r,['Image URL','imageurl','Image_URL','image url','Image Url']),
+        };
+      }).filter(r=>r._day&&/^\d+$/.test(r._day));
+    }
+
+    function parseCL(rows,cols){
+      return rows.map(r=>{
+        const cat=g(r,['Category','category']);
+        const item=g(r,['Item','item']);
+        // CSV: checkbox is TRUE/FALSE string; or empty for unchecked
+        const necStr=g(r,['Necessary','necessary']);
+        const req=necStr.toUpperCase()==='TRUE'||necStr==='1'||necStr.toUpperCase()==='YES';
+        const note=g(r,['Notes','notes','Note','note']);
+        return {_cat:cat,_item:item,_req:req,_note:note,_key:(cat+'__'+item)};
+      }).filter(r=>r._item);
+    }
+
+    function parseCars(rows,cols){
+      return rows.map(r=>{
+        const carN=g(r,['Car','car']);
+        const pax=[];
+        cols.forEach(c=>{
+          if(/passenger/i.test(c)){
+            const v=(r[c]||'').trim();
+            if(v&&v!=='null') pax.push(v);
+          }
+        });
+        return {_name:carN,_num:carN,_pax:pax};
+      }).filter(r=>r._name&&r._name!=='null');
+    }
+
+    function parseRooms(rows,cols){
+      return rows.map((r,i)=>({
+        _key:i,
+        _period:g(r,['Period','period']),
+        _hotel:g(r,['Hotel','hotel']),
+        _room:g(r,['Room','room']),
+        _in:g(r,['Check-in','Checkin','checkin','Check_in','check-in']),
+        _out:g(r,['Check-out','Checkout','checkout','Check_out','check-out']),
+        _members:g(r,['Members','members']).split(';').filter(Boolean).map(s=>s.trim()),
+      })).filter(r=>r._hotel);
+    }
+
+    function parseExps(rows,cols){
+      return rows.map(r=>{
+        const usd=parseFloat(g(r,['Amount_USD','Amount USD','amount_usd','amountusd']))||0;
+        return {
+          _date:g(r,['Date','date']),
+          _cat:g(r,['Category','category'])||'其他',
+          _desc:g(r,['Description','description']),
+          _usd:usd,
+          _payer:g(r,['Payer','payer']),
+          _pay:g(r,['Payment','payment']),
+        };
+      }).filter(r=>r._usd>0||r._desc);
+    }
+
+    function parseSOS(rows,cols){
+      return rows.map((r,i)=>({
+        _key:i,
+        _cat:g(r,['Category','category']),
+        _label:g(r,['Label (名稱)','Label','label','label_名稱','label名稱']),
+        _contact:g(r,['Contact (電話/資訊)','Contact','contact','contact_電話資訊','contact電話資訊']),
+        _note:g(r,['Note (備註)','Note','note','note_備註','note備註']),
+      })).filter(r=>r._label||r._contact);
+    }
+
+    onMounted(async()=>{
+      // rate
+      try{const r=await fetch('https://open.er-api.com/v6/latest/USD');const d=await r.json();if(d.rates&&d.rates.TWD)rate.value=d.rates.TWD;}catch(e){}
+      // weather
+      fetchWx();
+      // announcement
+      gviz(GIDS.ann).then(({rows,cols})=>{
+        anns.value=rows.filter(r=>(r['active']||r['Active']||'').toUpperCase()==='TRUE')
+          .map(r=>({e:r['emoji']||r['Emoji']||'📢',t:r['title']||r['Title']||'',b:r['body']||r['Body']||''}));
+      }).catch(()=>{});
+      // itinerary
+      gviz(GIDS.it).then(({rows,cols})=>{
+        itRaw.value=parseIT(rows,cols);loadIt.value=false;
+      }).catch(()=>{loadIt.value=false;});
+      // checklist
+      gviz(GIDS.cl).then(({rows,cols})=>{
+        clDebugCols.value=cols.join(', ');
+        clRaw.value=parseCL(rows,cols);loadCl.value=false;
+      }).catch(e=>{console.error('cl',e);loadCl.value=false;});
+      // cars
+      gviz(GIDS.cars).then(({rows,cols})=>{
+        carsDebugCols.value=cols.join(', ');
+        cars.value=parseCars(rows,cols);loadCars.value=false;
+      }).catch(()=>{loadCars.value=false;});
+      // rooms
+      gviz(GIDS.rooms).then(({rows,cols})=>{
+        rooms.value=parseRooms(rows,cols);loadRooms.value=false;
+      }).catch(()=>{loadRooms.value=false;});
+      // expenses
+      gviz(GIDS.exp).then(({rows,cols})=>{
+        exps.value=parseExps(rows,cols);loadExp.value=false;
+      }).catch(()=>{loadExp.value=false;});
+      // sos
+      gviz(GIDS.sos).then(({rows,cols})=>{
+        sos.value=parseSOS(rows,cols);
+      }).catch(()=>{});
+      // fleet
+      gviz(GIDS.fleet).then(({rows})=>{
+        fleetData.value=rows;
+      }).catch(()=>{});
+    });
+
+    return {
+      tab,sub,gTab,games,
+      anns,
+      itRaw,loadIt,dayList,curItems,selDay,curCityName,wxNow,wIcon,
+      curPopup,hideImg,cColor,cIcon,
+      clRaw,loadCl,clCats,clShow,clCat,ckd,toggleCl,clDebugCols,
+      cars,loadCars,carsDebugCols,
+      rooms,loadRooms,
+      exps,loadExp,totUSD,eBg,eFa,
+      sos,rate,
+      fleetData,fleetMap,
+      // lottery
+      lIn,lPool,lRes,lColor,lAdd,lDel,lClear,lAll,lDraw,
+      // dice
+      dVals,dRoll,dTotal,rollOne,rollAll,dAdd,dDel,
+      // score
+      sIn,scList,sAdd,sAll,sPlus,sMinus,sDel,sReset,
+    };
+  }
+}).mount('#app');
+</script>
+</body>
+</html>
