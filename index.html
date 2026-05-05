@@ -298,12 +298,17 @@ body{background:#EDE8DF;font-family:'Noto Sans TC',sans-serif;color:#1a1a1a;marg
             <i class="fa-solid fa-location-crosshairs"></i> 一鍵分享位置
           </a>
         </div>
-        <!-- 地圖嵌入（如果 Sheet 有填連結） -->
-        <div v-if="fleetMap(ci)" style="border-radius:12px;overflow:hidden;height:150px;border:1px solid #e5e7eb">
-          <iframe :src="fleetMap(ci)" style="width:100%;height:100%;border:0" allowfullscreen loading="lazy"></iframe>
+        <!-- 地圖連結（如果 Sheet 有填） -->
+        <div v-if="fleetMap(ci)">
+          <a :href="fleetMap(ci)" target="_blank"
+            style="display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#1B3A6B,#16a34a);color:#fff;border-radius:12px;padding:12px;text-decoration:none;font-weight:700;font-size:.88rem;margin-top:4px">
+            <i class="fa-solid fa-map-location-dot"></i>
+            點此查看即時位置 📍
+          </a>
+          <div style="font-size:.68rem;color:#aaa;text-align:center;margin-top:6px">點擊後在 Google Maps 查看即時位置</div>
         </div>
-        <div v-else style="background:#f9fafb;border-radius:12px;height:60px;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#bbb;border:1.5px dashed #e5e7eb">
-          📍 司機分享連結後自動顯示地圖
+        <div v-else style="background:#f9fafb;border-radius:12px;padding:12px;text-align:center;font-size:.75rem;color:#bbb;border:1.5px dashed #e5e7eb;margin-top:4px">
+          📍 司機分享連結後自動顯示
         </div>
       </div>
     </div>
@@ -451,7 +456,7 @@ body{background:#EDE8DF;font-family:'Noto Sans TC',sans-serif;color:#1a1a1a;marg
   <div v-if="gTab==='score'" class="card">
     <div class="card-title">🏆 計分板</div>
     <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
-      <input v-model="sIn" @keydown.enter="sAdd" placeholder="新增玩家..."
+      <input v-model="sIn" placeholder="新增玩家..."
         style="flex:1;min-width:120px;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;padding:8px 12px;font-size:.88rem;outline:none;font-family:inherit">
       <button @click="sAdd" style="background:#1B3A6B;color:#fff;border:none;border-radius:12px;padding:8px 14px;font-weight:700;font-size:.82rem;cursor:pointer;font-family:inherit">加入</button>
       <button @click="sAll" style="background:#f3f4f6;color:#555;border:none;border-radius:12px;padding:8px 10px;font-weight:700;font-size:.82rem;cursor:pointer;font-family:inherit">全員</button>
@@ -614,7 +619,15 @@ createApp({
       const f=fleetData.value[ci];
       if(!f) return null;
       const url=f['Maps_URL']||f['maps_url']||f['mapsurl']||f['Maps URL']||'';
-      return url.startsWith('http')?url:null;
+      if(!url||!url.startsWith('http')) return null;
+      // Try to convert to embeddable format
+      // maps.app.goo.gl short URLs can't be embedded directly - return the URL for link display
+      return url;
+    }
+    function isEmbeddable(url){
+      if(!url) return false;
+      // Only google.com/maps embed URLs work in iframe
+      return url.includes('google.com/maps/embed') || url.includes('google.com/maps/d/embed');
     }
     const rate=ref(32.5);
     const wxAll=ref({});
@@ -879,7 +892,7 @@ createApp({
       rooms,loadRooms,
       exps,loadExp,totUSD,eBg,eFa,
       sos,rate,
-      fleetData,fleetMap,
+      fleetData,fleetMap,isEmbeddable,
       // lottery
       lIn,lPool,lRes,lColor,lAdd,lDel,lClear,lAll,lDraw,
       // dice
