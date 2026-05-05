@@ -455,26 +455,65 @@ body{background:#EDE8DF;font-family:'Noto Sans TC',sans-serif;color:#1a1a1a;marg
   <!-- SCOREBOARD -->
   <div v-if="gTab==='score'" class="card">
     <div class="card-title">🏆 計分板</div>
-    <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
+
+    <!-- 加人區 -->
+    <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap">
       <input v-model="sIn" placeholder="新增玩家..."
         style="flex:1;min-width:120px;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;padding:8px 12px;font-size:.88rem;outline:none;font-family:inherit">
       <button @click="sAdd" style="background:#1B3A6B;color:#fff;border:none;border-radius:12px;padding:8px 14px;font-weight:700;font-size:.82rem;cursor:pointer;font-family:inherit">加入</button>
       <button @click="sAll" style="background:#f3f4f6;color:#555;border:none;border-radius:12px;padding:8px 10px;font-weight:700;font-size:.82rem;cursor:pointer;font-family:inherit">全員</button>
       <button @click="sReset" style="background:#FEF2F2;color:#ef4444;border:none;border-radius:12px;padding:8px 10px;font-size:.82rem;cursor:pointer;font-family:inherit">重置</button>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div v-for="(p,i) in scList" :key="p.n" class="sc-card">
-        <div style="font-size:.68rem;color:#aaa">{{['🥇','🥈','🥉'][i]||'#'+(i+1)}}</div>
-        <div style="font-weight:700;font-size:.83rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{p.n}}</div>
-        <div class="sc-val">{{p.s}}</div>
-        <div style="display:flex;gap:6px;justify-content:center;margin-top:8px">
-          <button @click="sPlus(p.n)" class="sc-btn" style="background:#dcfce7;color:#16a34a">＋</button>
-          <button @click="sMinus(p.n)" class="sc-btn" style="background:#FEF2F2;color:#ef4444">－</button>
-          <button @click="sDel(p.n)" class="sc-btn" style="background:#f3f4f6;color:#aaa;font-size:.72rem">🗑</button>
+
+    <!-- 排行榜 -->
+    <div v-if="scList.length===0" style="color:#aaa;font-size:.82rem;text-align:center;padding:16px">加入玩家後開始計分</div>
+
+    <!-- 前三名大顯示 -->
+    <div v-if="scList.length>0 && scList[0].s>0" style="display:flex;justify-content:center;align-items:flex-end;gap:8px;margin-bottom:16px;padding:16px 8px 0">
+      <!-- 2nd -->
+      <div v-if="scList[1]" style="text-align:center;flex:1">
+        <div style="font-size:1.4rem">🥈</div>
+        <div style="font-size:.78rem;font-weight:700;margin:4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{scList[1].n}}</div>
+        <div style="background:#C0C0C0;border-radius:12px 12px 0 0;padding:12px 0 8px;font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:#fff">{{scList[1].s}}</div>
+      </div>
+      <!-- 1st -->
+      <div v-if="scList[0]" style="text-align:center;flex:1">
+        <div style="font-size:1.8rem">🥇</div>
+        <div style="font-size:.82rem;font-weight:900;margin:4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{scList[0].n}}</div>
+        <div style="background:linear-gradient(135deg,#F0B429,#e8920a);border-radius:12px 12px 0 0;padding:16px 0 8px;font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;color:#fff">{{scList[0].s}}</div>
+      </div>
+      <!-- 3rd -->
+      <div v-if="scList[2]" style="text-align:center;flex:1">
+        <div style="font-size:1.2rem">🥉</div>
+        <div style="font-size:.75rem;font-weight:700;margin:4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{scList[2].n}}</div>
+        <div style="background:#CD7F32;border-radius:12px 12px 0 0;padding:8px 0 8px;font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;color:#fff">{{scList[2].s}}</div>
+      </div>
+    </div>
+
+    <!-- 所有人列表 + 加減分 -->
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div v-for="(p,i) in scList" :key="p.n"
+        style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;border:1.5px solid #f0f0f0;transition:all .2s"
+        :style="i===0&&p.s>0?'border-color:#F0B429;background:#FFFBEB':i===1&&p.s>0?'border-color:#e5e7eb;background:#fafafa':'background:#fff'">
+        <!-- rank -->
+        <div style="font-size:1.1rem;width:28px;text-align:center;flex-shrink:0">
+          {{['🥇','🥈','🥉'][i]||'#'+(i+1)}}
+        </div>
+        <!-- name -->
+        <div style="flex:1;font-weight:700;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{p.n}}</div>
+        <!-- score -->
+        <div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;color:#1B3A6B;min-width:36px;text-align:center">{{p.s}}</div>
+        <!-- buttons -->
+        <div style="display:flex;gap:5px;flex-shrink:0">
+          <button @click="sPlus(p.n)"
+            style="width:32px;height:32px;border-radius:50%;border:none;background:#dcfce7;color:#16a34a;font-weight:900;font-size:1rem;cursor:pointer;font-family:inherit">＋</button>
+          <button @click="sMinus(p.n)"
+            style="width:32px;height:32px;border-radius:50%;border:none;background:#FEF2F2;color:#ef4444;font-weight:900;font-size:1rem;cursor:pointer;font-family:inherit">－</button>
+          <button @click="sDel(p.n)"
+            style="width:32px;height:32px;border-radius:50%;border:none;background:#f3f4f6;color:#aaa;font-size:.7rem;cursor:pointer;font-family:inherit">🗑</button>
         </div>
       </div>
     </div>
-    <div v-if="scList.length===0" style="color:#aaa;font-size:.82rem;text-align:center;padding:16px">加入玩家後開始計分</div>
   </div>
 </div>
 
