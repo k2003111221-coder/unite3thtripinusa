@@ -16,12 +16,12 @@ body{background:#EDE8DF;font-family:'Noto Sans TC',sans-serif;color:#1a1a1a;marg
 
 /* HERO */
 .hero{position:relative;height:260px;overflow:hidden;border-radius:0 0 36px 36px;box-shadow:0 8px 30px rgba(0,0,0,.18)}
-.hero-bg{position:absolute;inset:0;background:linear-gradient(160deg,#0d1f4a 0%,#C0392B 55%,#e8a020 100%)}
+.hero-bg{position:absolute;inset:0;background:url('https://drive.google.com/uc?export=view&id=1N99GcAZVULxGroUmDQVWME1INH1CWmcu') center/cover no-repeat;}
 .hero-stars{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.14) 1px,transparent 1px),radial-gradient(circle,rgba(255,255,255,.06) 1px,transparent 1px);background-size:36px 36px,18px 18px}
 .hero-stripe{position:absolute;top:0;left:0;right:0;height:6px;background:repeating-linear-gradient(90deg,#C0392B 0,#C0392B 33.33%,#fff 33.33%,#fff 66.66%,#1B3A6B 66.66%,#1B3A6B 100%)}
 .hero-c1{position:absolute;width:180px;height:180px;border-radius:50%;border:1.5px solid rgba(255,255,255,.1);top:-40px;right:-40px}
 .hero-c2{position:absolute;width:120px;height:120px;border-radius:50%;border:1.5px solid rgba(255,255,255,.08);bottom:-20px;left:-20px}
-.hero-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:55px}
+.hero-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:60px;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.4) 100%);}
 .hero-eyebrow{font-family:monospace;font-size:.6rem;letter-spacing:.3em;color:rgba(255,255,255,.6);text-transform:uppercase;margin-bottom:.6rem}
 .hero-title{font-family:'Playfair Display',serif;font-size:3.2rem;font-weight:900;line-height:.88;text-align:center;text-shadow:0 2px 20px rgba(0,0,0,.4);color:#fff}
 .hero-title span{color:#F0B429;display:block}
@@ -120,9 +120,9 @@ body{background:#EDE8DF;font-family:'Noto Sans TC',sans-serif;color:#1a1a1a;marg
   <div class="hero-c1"></div>
   <div class="hero-c2"></div>
   <div class="hero-text">
-    <div class="hero-eyebrow">UNITE · 第三屆 · 美西之旅</div>
-    <div class="hero-title">UNITE<span>Reunion</span></div>
-    <div class="hero-sub">LA · Vegas · Grand Canyon · 9/18–9/27</div>
+    <div class="hero-eyebrow" style="display:none">UNITE · 第三屆 · 美西之旅</div>
+    <div class="hero-title" style="display:none">UNITE<span>Reunion</span></div>
+    <div class="hero-sub" style="display:none">LA · Vegas · Grand Canyon · 9/18–9/27</div>
   </div>
   <div class="hero-tabs">
     <button @click="tab='it'" :class="{on:tab==='it'}" class="htab" title="行程"><i class="fa-solid fa-map-location-dot"></i></button>
