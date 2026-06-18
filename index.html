@@ -229,10 +229,27 @@ body{background:#EDE8DF;font-family:'Noto Sans TC',sans-serif;color:#1a1a1a;marg
   <!-- CARS -->
   <div v-if="sub==='cars'" class="card">
     <div class="card-title"><i class="fa-solid fa-car" style="color:#C0392B"></i> 分車表</div>
+
+    <!-- 圖例說明 -->
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:5px;font-size:.72rem;color:#555">
+        <span style="background:#1B3A6B;color:#fff;padding:2px 10px;border-radius:20px;font-size:.72rem">江承祐</span>
+        租車負責人
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:.72rem;color:#555">
+        <span style="background:#16a34a;color:#fff;padding:2px 10px;border-radius:20px;font-size:.72rem">蕭子翔</span>
+        具備駕照
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:.72rem;color:#555">
+        <span style="background:#f3f4f6;color:#555;padding:2px 10px;border-radius:20px;font-size:.72rem">薛安秀</span>
+        乘客
+      </div>
+    </div>
+
     <div v-if="loadCars" style="display:flex;gap:4px;color:#ccc;font-size:.8rem"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
     <div v-if="!loadCars&&cars.length===0" style="color:#f59e0b;font-size:.78rem;padding:8px 12px;background:#fffbeb;border-radius:8px">⚠ 無法讀取分車，偵測到欄位：{{carsDebugCols}}</div>
-    <div v-for="(car,ci) in cars" :key="ci" style="margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+    <div v-for="(car,ci) in cars" :key="ci" style="margin-bottom:18px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
         <div style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.72rem;font-weight:900;box-shadow:0 2px 6px rgba(0,0,0,.15);flex-shrink:0"
           :style="{background:['#1B3A6B','#C0392B','#16a34a','#ea580c'][ci%4]}">
           {{car._num}}
@@ -240,7 +257,11 @@ body{background:#EDE8DF;font-family:'Noto Sans TC',sans-serif;color:#1a1a1a;marg
         <span style="font-weight:700;font-size:.9rem">{{car._name}}</span>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;padding-left:42px">
-        <span v-for="p in car._pax" :key="p" style="font-size:.75rem;background:#f3f4f6;color:#555;padding:3px 10px;border-radius:20px">{{p}}</span>
+        <span v-for="p in car._pax" :key="p"
+          :style="paxStyle(p)"
+          style="font-size:.75rem;padding:4px 12px;border-radius:20px;font-weight:500">
+          {{cleanName(p)}}
+        </span>
       </div>
     </div>
   </div>
@@ -677,7 +698,21 @@ createApp({
     const sos=ref([]);
     const fleetData=ref([]);
 
-    // Get map URL for a car by index
+    // 租車負責人（深藍底）
+    const RENTERS = new Set(['江承祐','張彥傑']);
+    // 具備駕照（綠底）
+    const DRIVERS = new Set(['江承祐','張彥傑','聶誠漢','傅思瑋','吳松霖','林孟蓉','白坤耿','蕭子翔','蔡金童','盧振揚']);
+
+    function cleanName(p){
+      // 移除 (租車) 前綴
+      return p.replace(/^\(租車\)/,'').trim();
+    }
+    function paxStyle(p){
+      const name = cleanName(p);
+      if(RENTERS.has(name)) return 'background:#1B3A6B;color:#fff';
+      if(DRIVERS.has(name)) return 'background:#16a34a;color:#fff';
+      return 'background:#f3f4f6;color:#555';
+    }
     function fleetMap(ci){
       const f=fleetData.value[ci];
       if(!f) return null;
@@ -951,7 +986,7 @@ createApp({
       itRaw,loadIt,dayList,curItems,selDay,curCityName,wxNow,wIcon,
       curPopup,hideImg,cColor,cIcon,
       clRaw,loadCl,clCats,clShow,clCat,ckd,toggleCl,clDebugCols,
-      cars,loadCars,carsDebugCols,
+      cars,loadCars,carsDebugCols,paxStyle,cleanName,
       rooms,loadRooms,roomGroups,openHotels,toggleHotel,
       exps,loadExp,totUSD,eBg,eFa,
       sos,rate,
