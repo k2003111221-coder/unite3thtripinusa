@@ -379,6 +379,58 @@ body{background:#EDE8DF;font-family:'Noto Sans TC',sans-serif;color:#1a1a1a;marg
 
 <!-- ═══ EXPENSES ═══ -->
 <div v-if="tab==='exp'" class="fade-in" style="padding:14px">
+  <div class="subtab-row">
+    <button @click="expView='est'" class="stab" :class="{on:expView==='est'}">📊 預估總表</button>
+    <button @click="expView='real'" class="stab" :class="{on:expView==='real'}">🧾 實際花費</button>
+  </div>
+
+  <!-- ═══ 預估總表 ═══ -->
+  <div v-if="expView==='est'" class="fade-in">
+    <div class="exp-banner">
+      <div style="position:absolute;right:-20px;top:-20px;width:100px;height:100px;background:rgba(255,255,255,.07);border-radius:50%"></div>
+      <div style="position:relative;z-index:1">
+        <div style="font-size:.7rem;color:rgba(255,255,255,.6);margin-bottom:4px">每人預估花費</div>
+        <div style="font-size:2.8rem;font-weight:900;line-height:1">NT${{budTotTWD.toLocaleString()}}</div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,.6);margin-top:4px">≈ ${{budTotUSD.toFixed(0)}} USD ／ 人</div>
+        <div style="display:flex;gap:18px;margin-top:10px;font-size:.72rem">
+          <div><div style="color:rgba(255,255,255,.5)">團體總額</div><div style="font-weight:700">NT${{(budTotTWD*18).toLocaleString()}}</div></div>
+          <div><div style="color:rgba(255,255,255,.5)">換算匯率</div><div style="font-weight:700">1 : {{BUD_RATE}}</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="loadBud" style="display:flex;gap:4px;color:#ccc;font-size:.8rem;justify-content:center;padding:16px 0"><span class="dot"></span><span class="dot"></span><span class="dot"></span> 載入中</div>
+
+    <div v-for="(gp,gi) in budGroups" :key="gi" class="card" style="padding:1rem 1.1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">
+        <div style="font-weight:900;font-size:.95rem">{{gp.cat}}</div>
+        <div style="font-weight:900;font-size:.9rem;color:#1B3A6B">NT${{budTWD(gp.sub).toLocaleString()}}</div>
+      </div>
+      <div v-for="(b,bi) in gp.items" :key="bi" style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:7px 0;border-top:1px solid #f5f5f5">
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:.85rem">{{b._item}}</div>
+          <div v-if="b._note" style="font-size:.66rem;color:#aaa;margin-top:1px">{{b._note}}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-weight:700;font-size:.85rem">NT${{budTWD(b._usd).toLocaleString()}}</div>
+          <div style="font-size:.62rem;color:#bbb">${{b._usd.toFixed(0)}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="budSelf.length" class="card" style="background:#f8f9fb;border:1.5px dashed #d5dae3">
+      <div style="font-weight:800;font-size:.85rem;color:#888;margin-bottom:.5rem"><i class="fa-solid fa-circle-info" style="margin-right:5px"></i>以下自理，不含在上方總額</div>
+      <div v-for="(b,bi) in budSelf" :key="bi" style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 0;border-top:1px solid #eef0f4">
+        <div style="font-weight:600;font-size:.83rem;color:#777">{{b._cat}}｜{{b._item}}</div>
+        <div v-if="b._note" style="font-size:.66rem;color:#aaa;flex-shrink:0">{{b._note}}</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;font-size:.66rem;color:#bbb;padding:2px 0 8px">※ 預估金額以固定匯率 {{BUD_RATE}} 換算，實際以出團結算為準</div>
+  </div>
+
+  <!-- ═══ 實際花費（流水帳）═══ -->
+  <div v-if="expView==='real'" class="fade-in">
   <div class="exp-banner">
     <div style="position:absolute;right:-20px;top:-20px;width:100px;height:100px;background:rgba(255,255,255,.07);border-radius:50%"></div>
     <div style="position:relative;z-index:1">
@@ -386,7 +438,7 @@ body{background:#EDE8DF;font-family:'Noto Sans TC',sans-serif;color:#1a1a1a;marg
       <div style="font-size:2.8rem;font-weight:900;line-height:1">${{totUSD.toFixed(0)}}</div>
       <div style="font-size:.8rem;color:rgba(255,255,255,.6);margin-top:4px">≈ NT${{Math.round(totUSD*rate).toLocaleString()}}</div>
       <div style="display:flex;gap:18px;margin-top:10px;font-size:.72rem">
-        <div><div style="color:rgba(255,255,255,.5)">每人平均</div><div style="font-weight:700">${{(totUSD/19).toFixed(1)}}</div></div>
+        <div><div style="color:rgba(255,255,255,.5)">每人平均</div><div style="font-weight:700">${{(totUSD/18).toFixed(1)}}</div></div>
         <div><div style="color:rgba(255,255,255,.5)">筆數</div><div style="font-weight:700">{{exps.length}}</div></div>
         <div><div style="color:rgba(255,255,255,.5)">USD匯率</div><div style="font-weight:700">{{rate.toFixed(2)}}</div></div>
       </div>
@@ -409,6 +461,7 @@ body{background:#EDE8DF;font-family:'Noto Sans TC',sans-serif;color:#1a1a1a;marg
         <div style="font-size:.66rem;color:#aaa">NT${{Math.round(e._usd*rate).toLocaleString()}}</div>
       </div>
     </div>
+  </div>
   </div>
 </div>
 
@@ -579,8 +632,9 @@ const SHEET_ID = '1IDivf8Qa-0RZ48e9kL95M05pmDP7cuORkcfIvpxuxPI';
 const GIDS = {
   it:'62470407', ann:'103928860', cl:'2066468640',
   cars:'594483032', rooms:'1302066597', exp:'1805320525',
-  fleet:'638807346', sos:'1113369150'
+  fleet:'638807346', sos:'1113369150', bud:'540537269'
 };
+const BUD_RATE = 32; // 預算表固定匯率
 const MBR = ['傅思瑋','曹芳蜜','林孟蓉','白坤耿','蕭子翔','鄭揚霖','謝協成','吳松霖','盧振揚','林筠珊','蔡金童','陳語柔','楊怡玫','張彥傑','謝韻璇','聶誠漢','江承祐','薛安秀'];
 
 // City weather by day number
@@ -695,6 +749,8 @@ createApp({
       return [...map.values()];
     });
     const exps=ref([]); const loadExp=ref(true);
+    const expView=ref('est'); // 'est'=預估總表, 'real'=實際流水帳
+    const budRaw=ref([]); const loadBud=ref(true);
     const sos=ref([]);
     const fleetData=ref([]);
 
@@ -768,6 +824,22 @@ createApp({
 
     // expenses total
     const totUSD=computed(()=>exps.value.reduce((s,e)=>s+e._usd,0));
+
+    // budget (預估) — fixed rate 32, per person
+    const budIncl=computed(()=>budRaw.value.filter(b=>b._incl));
+    const budSelf=computed(()=>budRaw.value.filter(b=>!b._incl));
+    const budGroups=computed(()=>{
+      const map=new Map();
+      budIncl.value.forEach(b=>{
+        if(!map.has(b._cat)) map.set(b._cat,{cat:b._cat,items:[],sub:0});
+        const g=map.get(b._cat);
+        g.items.push(b); g.sub+=b._usd;
+      });
+      return [...map.values()];
+    });
+    const budTotUSD=computed(()=>budIncl.value.reduce((s,b)=>s+b._usd,0));
+    const budTotTWD=computed(()=>Math.round(budTotUSD.value*BUD_RATE));
+    function budTWD(usd){return Math.round(usd*BUD_RATE);}
 
     // helpers
     function wIcon(c){if(!c)return'🌤';if(c===0)return'☀️';if(c<=2)return'⛅';if(c<=3)return'☁️';if(c<=67)return'🌧️';return'⛈️';}
@@ -928,6 +1000,20 @@ createApp({
       }).filter(r=>r._usd>0||r._desc);
     }
 
+    function parseBud(rows,cols){
+      return rows.map(r=>{
+        const inc=g(r,['列入總計','列入總計','Include','include']).toString().trim().toUpperCase();
+        return {
+          _cat:g(r,['類別','類別','Category','category']),
+          _item:g(r,['項目','項目','Item','item','說明','Description']),
+          _usd:parseFloat(g(r,['USD / 人','USD/人','usd人','USD_人','Amount_USD']))||0,
+          _incl:inc==='TRUE',
+          _note:g(r,['備註','備註','Note','note']),
+          _flag:inc, // TRUE / FALSE / 其他(空)
+        };
+      }).filter(r=>(r._flag==='TRUE'||r._flag==='FALSE')&&r._item);
+    }
+
     function parseSOS(rows,cols){
       return rows.map((r,i)=>({
         _key:i,
@@ -970,6 +1056,10 @@ createApp({
       gviz(GIDS.exp).then(({rows,cols})=>{
         exps.value=parseExps(rows,cols);loadExp.value=false;
       }).catch(()=>{loadExp.value=false;});
+      // budget (預估)
+      gviz(GIDS.bud).then(({rows,cols})=>{
+        budRaw.value=parseBud(rows,cols);loadBud.value=false;
+      }).catch(()=>{loadBud.value=false;});
       // sos
       gviz(GIDS.sos).then(({rows,cols})=>{
         sos.value=parseSOS(rows,cols);
@@ -989,6 +1079,7 @@ createApp({
       cars,loadCars,carsDebugCols,paxStyle,cleanName,
       rooms,loadRooms,roomGroups,openHotels,toggleHotel,
       exps,loadExp,totUSD,eBg,eFa,
+      expView,loadBud,budGroups,budSelf,budTotUSD,budTotTWD,budTWD,BUD_RATE,
       sos,rate,
       fleetData,fleetMap,isEmbeddable,
       // lottery
