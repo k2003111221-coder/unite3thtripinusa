@@ -1000,15 +1000,29 @@ createApp({
       }).filter(r=>r._usd>0||r._desc);
     }
 
+    function budNum(r){
+      // 找欄名含 usd 的那一欄，避開半形/全形斜線與空格差異
+      const cols=r._cols||[];
+      for(const c of cols){
+        if(c&&c.toLowerCase().indexOf('usd')>=0){
+          const v=parseFloat(String(r[c]).replace(/[^0-9.\-]/g,''));
+          if(!isNaN(v)) return v;
+        }
+      }
+      // 退路：明確欄名
+      const raw=g(r,['USD / 人','USD／人','USD/人','usd人','usd／人','USD_人','Amount_USD']);
+      const v=parseFloat(String(raw).replace(/[^0-9.\-]/g,''));
+      return isNaN(v)?0:v;
+    }
     function parseBud(rows,cols){
       return rows.map(r=>{
-        const inc=g(r,['列入總計','列入總計','Include','include']).toString().trim().toUpperCase();
+        const inc=g(r,['列入總計','Include','include']).toString().trim().toUpperCase();
         return {
-          _cat:g(r,['類別','類別','Category','category']),
-          _item:g(r,['項目','項目','Item','item','說明','Description']),
-          _usd:parseFloat(g(r,['USD / 人','USD/人','usd人','USD_人','Amount_USD']))||0,
+          _cat:g(r,['類別','Category','category']),
+          _item:g(r,['項目','Item','item','說明','Description']),
+          _usd:budNum(r),
           _incl:inc==='TRUE',
-          _note:g(r,['備註','備註','Note','note']),
+          _note:g(r,['備註','Note','note']),
           _flag:inc, // TRUE / FALSE / 其他(空)
         };
       }).filter(r=>(r._flag==='TRUE'||r._flag==='FALSE')&&r._item);
